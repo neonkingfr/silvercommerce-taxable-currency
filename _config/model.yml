@@ -1,0 +1,6 @@
+---
+Name: taxablefieldtypes
+---
+SilverStripe\Core\Injector\Injector:
+  TaxableCurrency:
+    class: SilverCommerce\TaxableCurrency\DBTaxableCurrency
