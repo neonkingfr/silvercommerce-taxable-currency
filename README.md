@@ -1,6 +1,8 @@
 # TaxableCurrency
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/silvercommerce/taxable-currency/badges/quality-score.png?b=1.0)](https://scrutinizer-ci.com/g/silvercommerce/taxable-currency/?branch=1.0)
+[![Build Status](https://travis-ci.org/silvercommerce/taxable-currency.svg?branch=1.0)](https://travis-ci.org/silvercommerce/taxable-currency)
+
 
 Composite field that allows setting an amount and tax rate/category it will then
 render the final value
