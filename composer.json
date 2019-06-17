@@ -26,8 +26,11 @@
     },
     "require": {
         "silverstripe/framework": "~4.0",
-        "silvercommerce/tax-admin": "~1.0",
-        "silvercommerce/settings": "~1.0"
+        "silvercommerce/tax-admin": "~1.0"
+    },
+    "scripts": {
+        "lint": "phpcs -s src/ tests/",
+        "lint-clean": "phpcbf src/ tests/"
     },
     "autoload": {
         "psr-4": {
