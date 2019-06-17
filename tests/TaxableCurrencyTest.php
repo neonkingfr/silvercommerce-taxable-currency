@@ -66,6 +66,9 @@ class TaxableCurrencyTest extends SapphireTest
 
     public function testGetTaxRate()
     {
+        $curr = i18n::get_locale();
+        i18n::set_locale('en_GB');
+    
         $noprice = $this->objFromFixture(TestProduct::class, 'noprice');
         $notax = $this->objFromFixture(TestProduct::class, 'notax');
         $category = $this->objFromFixture(TestProduct::class, 'category');
@@ -88,6 +91,8 @@ class TaxableCurrencyTest extends SapphireTest
         $this->assertTrue($rate->exists());
         $this->assertInstanceOf(TaxRate::class, $rate);
         $this->assertEquals(20, $rate->Rate);
+
+        i18n::set_locale($curr);
     }
 
     public function testGetCurrency()
@@ -126,6 +131,9 @@ class TaxableCurrencyTest extends SapphireTest
 
     public function testGetTaxAmount()
     {
+        $curr = i18n::get_locale();
+        i18n::set_locale('en_GB');
+
         $noprice = $this->objFromFixture(TestProduct::class, 'noprice');
         $notax = $this->objFromFixture(TestProduct::class, 'notax');
         $category = $this->objFromFixture(TestProduct::class, 'category');
@@ -146,10 +154,15 @@ class TaxableCurrencyTest extends SapphireTest
 
         $rate = $vat_two->dbObject('Price')->getTaxAmount();
         $this->assertEquals(8.3333, $rate);
+
+        i18n::set_locale($curr);
     }
 
     public function testGetPriceAndTax()
     {
+        $curr = i18n::get_locale();
+        i18n::set_locale('en_GB');
+
         $noprice = $this->objFromFixture(TestProduct::class, 'noprice');
         $notax = $this->objFromFixture(TestProduct::class, 'notax');
         $category = $this->objFromFixture(TestProduct::class, 'category');
@@ -170,10 +183,15 @@ class TaxableCurrencyTest extends SapphireTest
 
         $rate = $vat_two->dbObject('Price')->getPriceAndTax();
         $this->assertEquals(49.9999, $rate);
+
+        i18n::set_locale($curr);
     }
 
     public function getTaxString()
     {
+        $locale = i18n::get_locale();
+        i18n::set_locale('en_GB');
+
         $product = $this->objFromFixture(TestProduct::class, 'vat');
 
         $curr = $product->dbObject('Price')->getShowPriceWithTax();
@@ -185,5 +203,6 @@ class TaxableCurrencyTest extends SapphireTest
         $this->assertEquals("ex. VAT", $product->dbObject('Price')->TaxString);
     
         $product->dbObject('Price')->setShowPriceWithTax($curr);
+        i18n::set_locale($locale);
     }
 }
