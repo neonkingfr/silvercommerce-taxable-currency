@@ -26,6 +26,36 @@ class DBTaxableCurrency extends DBComposite
     protected $locale = null;
 
     /**
+     * Should this field automatically show the price including Tax
+     * for the current field?
+     * 
+     * @var boolean|null
+     */
+    protected $show_price_with_tax;
+
+    /**
+     * Should a string (eg "Includes VAT") be added to the end of the price
+     * when rendered?
+     * 
+     * @var boolean|null
+     */
+    protected $show_tax_string;
+
+    /**
+     * Default behaviour for price with tax (if current instance not set)
+     * 
+     * @var boolean
+     */
+    private static $default_price_with_tax = false;
+
+    /**
+     * Default behaviour for adding the tax string to the rendered currency.
+     * 
+     * @var boolean
+     */
+    private static $default_tax_string = false;
+
+    /**
      * @param array
      */
     private static $composite_db = array(
@@ -41,8 +71,10 @@ class DBTaxableCurrency extends DBComposite
         'CurrencySymbol' => 'Varchar(1)',
         'Currency' => 'Varchar(3)',
         'TaxAmount' => 'Decimal',
+        'TaxString' => 'Varchar',
         'PriceAndTax' => 'Decimal',
-        'IncludesTax' => 'Boolean'
+        'ShowPriceWithTax' => 'Boolean',
+        'ShowTaxString' => 'Boolean'
     ];
 
     /**
@@ -122,6 +154,61 @@ class DBTaxableCurrency extends DBComposite
     }
 
     /**
+     * Get should this field automatically show the price including TAX?
+     * 
+     * @return boolean
+     */ 
+    public function getShowPriceWithTax()
+    {
+        if (!empty($this->show_price_with_tax)) {
+            return $this->show_price_with_tax;
+        }
+
+        return $this->config()->get('default_price_with_tax');
+    }
+
+    /**
+     * Set should this field automatically show the price including TAX?
+     *
+     * @param boolean $show Should this field render the price with TAX?
+     * 
+     * @return self
+     */ 
+    public function setShowPriceWithTax($show)
+    {
+        $this->show_price_with_tax = $show;
+        return $this;
+    }
+
+    /**
+     * Get is this field should add a "Tax String" (EG Includes VAT) to the rendered
+     * currency?
+     *
+     * @return boolean|null
+     */ 
+    public function getShowTaxString()
+    {
+        if (!empty($this->show_tax_string)) {
+            return $this->show_tax_string;
+        }
+
+        return $this->config()->get('default_tax_string');
+    }
+
+    /**
+     * Set if we should include a Tax String to the end of the rendered price?
+     *
+     * @param boolean|null $show Add string when rendered?
+     *
+     * @return self
+     */ 
+    public function setShowTaxString($show)
+    {
+        $this->show_tax_string = $show;
+        return $this;
+    }
+
+    /**
      * Get currency formatter
      *
      * @return NumberFormatter
@@ -132,18 +219,6 @@ class DBTaxableCurrency extends DBComposite
             $this->getLocale(),
             NumberFormatter::CURRENCY
         );
-    }
-
-    /**
-     * Method that allows us to define in templates if we should show
-     * price including tax, or excluding tax
-     * 
-     * @return boolean
-     */
-    public function getIncludesTax()
-    {
-        $config = SiteConfig::current_site_config();
-        return $config->ShowPriceAndTax;
     }
 
     /**
@@ -159,7 +234,7 @@ class DBTaxableCurrency extends DBComposite
     }
 
     /**
-     * Get ISO 4217 currecny code from curent locale
+     * Get ISO 4217 currency code from curent locale
      * 
      * @return string
      */
@@ -217,22 +292,19 @@ class DBTaxableCurrency extends DBComposite
     {
         $string = "";
         $rate = $this->getTaxRate();
-        $config = SiteConfig::current_site_config();
 
-        if ($config->ShowPriceTaxString) {
-            if ($rate && $this->IncludesTax) {
-                $string = _t(
-                    self::class . ".TaxIncludes",
-                    "inc. {title}",
-                    ["title" => $rate->Title]
-                );
-            } elseif ($rate && !$this->IncludesTax) {
-                $string = _t(
-                    self::class . ".TaxExcludes",
-                    "ex. {title}",
-                    ["title" => $rate->Title]
-                );
-            }
+        if ($rate->exists() && $this->ShowPriceWithTax) {
+            $string = _t(
+                self::class . ".TaxIncludes",
+                "inc. {title}",
+                ["title" => $rate->Title]
+            );
+        } elseif ($rate->exists() && !$this->ShowPriceWithTax) {
+            $string = _t(
+                self::class . ".TaxExcludes",
+                "ex. {title}",
+                ["title" => $rate->Title]
+            );
         }
 
         $this->extend("updateTaxString", $string);
@@ -251,7 +323,7 @@ class DBTaxableCurrency extends DBComposite
             return null;
         }
 
-        if ($this->IncludesTax) {
+        if ($this->ShowPriceWithTax) {
             $amount = $this->PriceAndTax;
         } else {
             $amount = $this->getField('Amount');
@@ -265,8 +337,12 @@ class DBTaxableCurrency extends DBComposite
             return $formatter->format($amount);
         }
 
-        // Localise currency
-        return $formatter->formatCurrency($amount, $currency);
+        return $this->renderWith(
+            __CLASS__ . "_Nice",
+            [
+                'Rendered' => $formatter->formatCurrency($amount, $currency)
+            ]
+        );
     }
 
     /**
