@@ -15,7 +15,7 @@ use SilverCommerce\TaxAdmin\Helpers\MathsHelper;
 /**
  * Custom data type that allows setting of a tax category as well as a price
  * and also performs tax based calculations.
- * 
+ *
  */
 class DBTaxableCurrency extends DBComposite
 {
@@ -27,7 +27,7 @@ class DBTaxableCurrency extends DBComposite
     /**
      * Should this field automatically show the price including Tax
      * for the current field?
-     * 
+     *
      * @var boolean|null
      */
     protected $show_price_with_tax;
@@ -35,21 +35,21 @@ class DBTaxableCurrency extends DBComposite
     /**
      * Should a string (eg "Includes VAT") be added to the end of the price
      * when rendered?
-     * 
+     *
      * @var boolean|null
      */
     protected $show_tax_string;
 
     /**
      * Default behaviour for price with tax (if current instance not set)
-     * 
+     *
      * @var boolean
      */
     private static $default_price_with_tax = false;
 
     /**
      * Default behaviour for adding the tax string to the rendered currency.
-     * 
+     *
      * @var boolean
      */
     private static $default_tax_string = false;
@@ -57,11 +57,11 @@ class DBTaxableCurrency extends DBComposite
     /**
      * @param array
      */
-    private static $composite_db = array(
+    private static $composite_db = [
         'Amount' => 'Decimal(19,4)',
         'TaxCategoryID' => 'Int',
         'TaxRateID' => 'Int'
-    );
+    ];
 
     /**
      * @param array
@@ -86,7 +86,7 @@ class DBTaxableCurrency extends DBComposite
 
     /**
      * Find a tax category based on the selected ID
-     * 
+     *
      * @return \SilverCommerce\TaxAdmin\Model\TaxCategory
      */
     public function getTaxCategory()
@@ -105,7 +105,7 @@ class DBTaxableCurrency extends DBComposite
     /**
      * Find a tax rate based on the selected ID, or revert to using the valid tax
      * from the current category
-     * 
+     *
      * @return \SilverCommerce\TaxAdmin\Model\TaxRate
      */
     public function getTaxRate()
@@ -154,9 +154,9 @@ class DBTaxableCurrency extends DBComposite
 
     /**
      * Get should this field automatically show the price including TAX?
-     * 
+     *
      * @return boolean
-     */ 
+     */
     public function getShowPriceWithTax()
     {
         if (!empty($this->show_price_with_tax)) {
@@ -170,9 +170,9 @@ class DBTaxableCurrency extends DBComposite
      * Set should this field automatically show the price including TAX?
      *
      * @param boolean $show Should this field render the price with TAX?
-     * 
+     *
      * @return self
-     */ 
+     */
     public function setShowPriceWithTax($show)
     {
         $this->show_price_with_tax = $show;
@@ -184,7 +184,7 @@ class DBTaxableCurrency extends DBComposite
      * currency?
      *
      * @return boolean|null
-     */ 
+     */
     public function getShowTaxString()
     {
         if (!empty($this->show_tax_string)) {
@@ -200,7 +200,7 @@ class DBTaxableCurrency extends DBComposite
      * @param boolean|null $show Add string when rendered?
      *
      * @return self
-     */ 
+     */
     public function setShowTaxString($show)
     {
         $this->show_tax_string = $show;
@@ -234,7 +234,7 @@ class DBTaxableCurrency extends DBComposite
 
     /**
      * Get ISO 4217 currency code from curent locale
-     * 
+     *
      * @return string
      */
     public function getCurrency()
@@ -248,7 +248,7 @@ class DBTaxableCurrency extends DBComposite
      * Get a final tax amount for this product. You can extend this
      * method using "UpdateTax" allowing third party modules to alter
      * tax amounts dynamically.
-     * 
+     *
      * @return float
      */
     public function getTaxAmount()
