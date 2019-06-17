@@ -26,13 +26,13 @@
     },
     "require": {
         "silverstripe/framework": "~4.0",
-        "silverstripe/siteconfig": "~4.0",
         "silvercommerce/tax-admin": "~1.0",
         "silvercommerce/settings": "~1.0"
     },
     "autoload": {
         "psr-4": {
-            "SilverCommerce\\TaxableCurrency\\": "src/"
+            "SilverCommerce\\TaxableCurrency\\": "src/",
+            "SilverCommerce\\TaxableCurrency\\Tests": "tests/"
         }
     }
 }

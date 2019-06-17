@@ -1,0 +1,49 @@
+SilverCommerce\TaxAdmin\Model\TaxRate:
+  global:
+    ID: 0
+    Title: "VAT Global"
+    Rate: 20
+    Global: 1
+  vat:
+    ID: 1
+    Title: "VAT"
+    Rate: 20
+    Global: 1
+  reduced:
+    ID: 2
+    Title: "reduced"
+    Rate: 5
+    Global: 1
+SilverCommerce\TaxAdmin\Model\TaxCategory:
+  uk:
+    ID: 1
+    Title: "UK"
+    Rates: =>SilverCommerce\TaxAdmin\Model\TaxRate.vat,=>SilverCommerce\TaxAdmin\Model\TaxRate.reduced
+SilverCommerce\TaxableCurrency\Tests\Model\TestProduct:
+  noprice:
+    Title: "No Price Product"
+    StockID: "np"
+  notax:
+    Title: "No Tax Product"
+    StockID: "nt"
+    PriceAmount: 5.99
+  category:
+    Title: "UK Product"
+    StockID: "vat"
+    PriceAmount: 4.6666
+    PriceTaxCategoryID: 1
+  vat:
+    Title: "VAT Product"
+    StockID: "vat"
+    PriceAmount: 4.6666
+    PriceTaxRateID: 1
+  vattwo:
+    Title: "VAT Product"
+    StockID: "vat"
+    PriceAmount: 41.6666
+    PriceTaxRateID: 1
+  reduced:
+    Title: "Reduced VAT Product"
+    StockID: "reduced"
+    PriceAmount: 49.62
+    PriceTaxRateID: 2

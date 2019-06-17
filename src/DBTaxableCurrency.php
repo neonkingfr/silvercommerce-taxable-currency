@@ -7,7 +7,6 @@ use SilverStripe\i18n\i18n;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\ReadonlyField;
-use SilverStripe\SiteConfig\SiteConfig;
 use SilverCommerce\TaxAdmin\Model\TaxRate;
 use SilverStripe\ORM\FieldType\DBComposite;
 use SilverCommerce\TaxAdmin\Model\TaxCategory;
