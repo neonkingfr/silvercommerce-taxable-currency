@@ -1,24 +1,19 @@
 SilverCommerce\TaxAdmin\Model\TaxRate:
-  global:
-    ID: 0
-    Title: "VAT Global"
-    Rate: 20
-    Global: 1
   vat:
     ID: 1
-    Title: "VAT"
+    Title: "TC VAT"
     Rate: 20
     Global: 1
   reduced:
     ID: 2
-    Title: "reduced"
+    Title: "TC reduced"
     Rate: 5
     Global: 1
 SilverCommerce\TaxAdmin\Model\TaxCategory:
   uk:
     ID: 1
     Title: "UK"
-    Rates: =>SilverCommerce\TaxAdmin\Model\TaxRate.vat,=>SilverCommerce\TaxAdmin\Model\TaxRate.reduced
+    Rates: =>SilverCommerce\TaxAdmin\Model\TaxRate.vat
 SilverCommerce\TaxableCurrency\Tests\Model\TestProduct:
   noprice:
     Title: "No Price Product"
