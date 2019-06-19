@@ -71,6 +71,7 @@ class DBTaxableCurrency extends DBComposite
         'Currency' => 'Varchar(3)',
         'TaxAmount' => 'Decimal',
         'TaxString' => 'Varchar',
+        'TaxPercentage' => 'Decimal',
         'PriceAndTax' => 'Decimal',
         'ShowPriceWithTax' => 'Boolean',
         'ShowTaxString' => 'Boolean'
@@ -150,6 +151,16 @@ class DBTaxableCurrency extends DBComposite
     public function getLocale()
     {
         return $this->locale ?: i18n::get_locale();
+    }
+
+    /**
+     * Get the percentage tax rate assotiated with this field
+     *
+     * @return float
+     */
+    public function getTaxPercentage()
+    {
+        return $this->getTaxRate()->Rate;
     }
 
     /**
@@ -312,36 +323,39 @@ class DBTaxableCurrency extends DBComposite
     }
 
     /**
+     * Return a formatted price (based on locale)
+     *
+     * @param bool $include_tax Should the formatted price include tax?
+     *
+     * @return string
+     */
+    public function getFormattedPrice(bool $include_tax = false)
+    {
+        $currency = $this->Currency;
+        $formatter = $this->getFormatter();
+
+        if ($include_tax) {
+            $amount = $this->PriceAndTax;
+        } else {
+            $amount = $this->Amount;
+        }
+
+        // Without currency, format as basic localised number
+        if (!$currency) {
+            return $formatter->format($amount);
+        }
+
+        return $formatter->formatCurrency($amount, $currency);
+    }
+
+    /**
      * Get nicely formatted currency (based on current locale)
      *
      * @return string
      */
     public function Nice()
     {
-        if (!$this->exists()) {
-            return null;
-        }
-
-        if ($this->ShowPriceWithTax) {
-            $amount = $this->PriceAndTax;
-        } else {
-            $amount = $this->getField('Amount');
-        }
-
-        $currency = $this->Currency;
-
-        // Without currency, format as basic localised number
-        $formatter = $this->getFormatter();
-        if (!$currency) {
-            return $formatter->format($amount);
-        }
-
-        return $this->renderWith(
-            __CLASS__ . "_Nice",
-            [
-                'Rendered' => $formatter->formatCurrency($amount, $currency)
-            ]
-        );
+        return $this->renderWith(__CLASS__ . "_Nice");
     }
 
     /**
