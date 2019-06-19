@@ -300,7 +300,7 @@ class DBTaxableCurrency extends DBComposite
      *
      * @return string
      */
-    public function getTaxString(bool $include_tax = null)
+    public function getTaxString($include_tax = null)
     {
         $string = "";
         $rate = $this->getTaxRate();
@@ -335,7 +335,7 @@ class DBTaxableCurrency extends DBComposite
      *
      * @return string
      */
-    public function getFormattedPrice(bool $include_tax = false)
+    public function getFormattedPrice($include_tax = false)
     {
         $currency = $this->Currency;
         $formatter = $this->getFormatter();
