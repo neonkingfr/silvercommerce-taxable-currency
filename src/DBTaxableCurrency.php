@@ -296,20 +296,26 @@ class DBTaxableCurrency extends DBComposite
      * overwrite the wording of this by using Silverstripes language
      * files
      *
-     * @return String
+     * @param bool|null $include_tax Should this include tax or not?
+     *
+     * @return string
      */
-    public function getTaxString()
+    public function getTaxString(bool $include_tax = null)
     {
         $string = "";
         $rate = $this->getTaxRate();
 
-        if ($rate->exists() && $this->ShowPriceWithTax) {
+        if (empty($include_tax)) {
+            $include_tax = $this->ShowPriceWithTax;
+        }
+
+        if ($rate->exists() && $include_tax) {
             $string = _t(
                 self::class . ".TaxIncludes",
                 "inc. {title}",
                 ["title" => $rate->Title]
             );
-        } elseif ($rate->exists() && !$this->ShowPriceWithTax) {
+        } elseif ($rate->exists() && !$include_tax) {
             $string = _t(
                 self::class . ".TaxExcludes",
                 "ex. {title}",
