@@ -15,7 +15,7 @@ use SilverStripe\i18n\i18n;
 class TaxableCurrencyTest extends SapphireTest
 {
 
-    protected static $fixture_file = 'TaxableCurrencyTest.yml';
+    protected static $fixture_file = 'TaxableCurrency.yml';
     
     /**
      * Setup test only objects

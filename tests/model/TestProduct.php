@@ -4,6 +4,7 @@ namespace SilverCommerce\TaxableCurrency\Tests\Model;
 
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\ORM\DataObject;
+use SilverCommerce\TaxableCurrency\TaxableExtension;
 
 class TestProduct extends DataObject implements TestOnly
 {
@@ -12,7 +13,10 @@ class TestProduct extends DataObject implements TestOnly
     private static $db = [
         "Title" => "Varchar",
         "StockID" => "Varchar",
-        "Price" => "TaxableCurrency",
         "StockLevel" => "Int"
+    ];
+
+    private static $extensions = [
+        TaxableExtension::class
     ];
 }
