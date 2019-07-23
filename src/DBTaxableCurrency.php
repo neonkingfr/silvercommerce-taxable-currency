@@ -41,6 +41,13 @@ class DBTaxableCurrency extends DBComposite
     protected $show_tax_string;
 
     /**
+     * Current decimal precision for rounding
+     * 
+     * @var int|null
+     */
+    protected $precision;
+
+    /**
      * Default behaviour for price with tax (if current instance not set)
      *
      * @var boolean
@@ -53,6 +60,13 @@ class DBTaxableCurrency extends DBComposite
      * @var boolean
      */
     private static $default_tax_string = false;
+
+    /**
+     * Default decimal precision used for rounding
+     * 
+     * @var int
+     */
+    private static $default_precision = 2;
 
     /**
      * @param array
@@ -69,7 +83,9 @@ class DBTaxableCurrency extends DBComposite
     private static $casting = [
         'CurrencySymbol' => 'Varchar(1)',
         'Currency' => 'Varchar(3)',
+        'RoundedAmount' => 'Decimal',
         'TaxAmount' => 'Decimal',
+        'RoundedTaxAmount' => 'Decimal',
         'TaxString' => 'Varchar',
         'TaxPercentage' => 'Decimal',
         'PriceAndTax' => 'Decimal',
@@ -256,6 +272,16 @@ class DBTaxableCurrency extends DBComposite
     }
 
     /**
+     * Get the current amount rounded to the desired precision
+     *
+     * @return float
+     */
+    public function getRoundedAmount()
+    {
+        return number_format($this->Amount, $this->getPrecision());
+    }
+
+    /**
      * Get a final tax amount for this product. You can extend this
      * method using "UpdateTax" allowing third party modules to alter
      * tax amounts dynamically.
@@ -279,6 +305,16 @@ class DBTaxableCurrency extends DBComposite
     }
 
     /**
+     * Get the tax amount rounded to the desired precision
+     *
+     * @return float
+     */
+    public function getRoundedTaxAmount()
+    {
+        return number_format($this->TaxAmount, $this->getPrecision());
+    }
+
+    /**
      * Get the final price of this product, including tax (if any)
      *
      * @return Float
@@ -287,6 +323,19 @@ class DBTaxableCurrency extends DBComposite
     {
         $price = $this->Amount + $this->TaxAmount;
         $this->extend("updatePriceAndTax", $price);
+
+        return $price;
+    }
+
+    /**
+     * Get the price and tax amount rounded to the desired precision
+     *
+     * @return float
+     */
+    public function getRoundedPriceAndTax()
+    {
+        $price = $this->RoundedAmount + $this->RoundedTaxAmount;
+        $this->extend("updateRoundedPriceAndTax", $price);
 
         return $price;
     }
@@ -341,9 +390,9 @@ class DBTaxableCurrency extends DBComposite
         $formatter = $this->getFormatter();
 
         if ($include_tax) {
-            $amount = $this->PriceAndTax;
+            $amount = $this->RoundedPriceAndTax;
         } else {
-            $amount = $this->Amount;
+            $amount = $this->RoundedAmount;
         }
 
         // Without currency, format as basic localised number
@@ -394,5 +443,33 @@ class DBTaxableCurrency extends DBComposite
             )
         )->setName($this->Name)
         ->setTitle($this->Name);
+    }
+
+    /**
+     * Get current decimal precision for rounding
+     *
+     * @return  int|null
+     */ 
+    public function getPrecision()
+    {
+        if (isset($this->precision)) {
+            return $this->precision;
+        }
+
+        return $this->config()->get('default_precision');
+    }
+
+    /**
+     * Set current decimal precision for rounding
+     *
+     * @param  int|null  $precision  decimal precision
+     *
+     * @return  self
+     */ 
+    public function setPrecision($precision)
+    {
+        $this->precision = $precision;
+
+        return $this;
     }
 }
