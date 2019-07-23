@@ -34,22 +34,22 @@ class TaxableExtensionTest extends SapphireTest
         $vat_two = $this->objFromFixture(TestProduct::class, 'vattwo');
         $reduced = $this->objFromFixture(TestProduct::class, 'reduced');
 
-        $price = $noprice->getTaxAmount();
+        $price = $noprice->getNoTaxPrice();
         $this->assertEquals(0, $price);
 
-        $price = $notax->getTaxAmount();
+        $price = $notax->getNoTaxPrice();
         $this->assertEquals(5.9900, $price);
 
-        $price = $category->getTaxAmount();
+        $price = $category->getNoTaxPrice();
         $this->assertEquals(4.6666, $price);
 
-        $price = $vat->getTaxAmount();
+        $price = $vat->getNoTaxPrice();
         $this->assertEquals(4.6666, $price);
 
-        $price = $vat_two->getTaxAmount();
+        $price = $vat_two->getNoTaxPrice();
         $this->assertEquals(41.6666, $price);
 
-        $price = $reduced->getTaxAmount();
+        $price = $reduced->getNoTaxPrice();
         $this->assertEquals(49.6200, $price);
     }
 
@@ -81,7 +81,7 @@ class TaxableExtensionTest extends SapphireTest
         $this->assertEquals(8.3333, $rate);
 
         $rate = $reduced->getTaxAmount();
-        $this->assertEquals(20.601, $rate);
+        $this->assertEquals(2.481, $rate);
 
         i18n::set_locale($curr);
     }
