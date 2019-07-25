@@ -42,7 +42,7 @@ class DBTaxableCurrency extends DBComposite
 
     /**
      * Current decimal precision for rounding
-     * 
+     *
      * @var int|null
      */
     protected $precision;
@@ -63,7 +63,7 @@ class DBTaxableCurrency extends DBComposite
 
     /**
      * Default decimal precision used for rounding
-     * 
+     *
      * @var int
      */
     private static $default_precision = 2;
@@ -449,7 +449,7 @@ class DBTaxableCurrency extends DBComposite
      * Get current decimal precision for rounding
      *
      * @return  int|null
-     */ 
+     */
     public function getPrecision()
     {
         if (isset($this->precision)) {
@@ -465,7 +465,7 @@ class DBTaxableCurrency extends DBComposite
      * @param  int|null  $precision  decimal precision
      *
      * @return  self
-     */ 
+     */
     public function setPrecision($precision)
     {
         $this->precision = $precision;

@@ -44,7 +44,7 @@ class TaxableExtension extends DataExtension
 
     /**
      * Shortcut to get the price of this product without tax
-     * 
+     *
      * @return float
      */
     public function getNoTaxPrice()
